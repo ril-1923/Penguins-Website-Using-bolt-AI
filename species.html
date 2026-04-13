@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PenguinWorld - Species</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <style>
+      :root {
+        --snow: #f0f8ff;
+        --ice1: #daeef8;
+        --ice2: #b8ddf0;
+        --ocean: #2471a3;
+        --ocean-dark: #1a4f72;
+        --teal: #17a589;
+        --charcoal: #1c2833;
+        --text: #1c2833;
+        --text-muted: #5d6d7e;
+        --danger-red: #c0392b;
+        --orange: #e67e22;
+        --green: #27ae60;
+      }
+      * { box-sizing: border-box; }
+      body { font-family: 'Source Sans 3', sans-serif; background: var(--snow); color: var(--text); margin: 0; }
+
+      .navbar {
+        background: rgba(240,248,255,0.96) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(36,113,163,0.15);
+        padding: 1rem 0;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      }
+      .navbar-brand { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.4rem; color: var(--ocean-dark) !important; letter-spacing: 0.5px; }
+      .nav-link { color: var(--charcoal) !important; font-weight: 600; font-size: 0.95rem; padding: 0.5rem 1rem !important; transition: color 0.2s; }
+      .nav-link:hover, .nav-link.active { color: var(--ocean) !important; }
+      .navbar-toggler { border-color: rgba(0,0,0,0.2); }
+
+      .page-hero {
+        background: linear-gradient(135deg, var(--ocean-dark) 0%, var(--ocean) 50%, #2e86c1 100%);
+        padding: 8rem 0 5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .page-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      }
+      .page-hero::after {
+        content: '🐧';
+        position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+        font-size: clamp(6rem, 12vw, 10rem); opacity: 0.15;
+      }
+      .page-hero h1 { font-family: 'Playfair Display', serif; font-weight: 900; font-size: clamp(2.4rem, 5vw, 4rem); color: #fff; line-height: 1.1; margin-bottom: 1rem; }
+      .page-hero p { color: rgba(255,255,255,0.82); font-size: 1.1rem; font-weight: 300; line-height: 1.7; max-width: 560px; }
+      .hero-wave { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; line-height: 0; }
+      .hero-wave svg { display: block; width: 100%; height: 60px; }
+
+      .filter-bar {
+        background: #fff;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        padding: 1rem 0;
+        position: sticky;
+        top: 72px;
+        z-index: 100;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      }
+      .filter-btn {
+        background: var(--snow); border: 2px solid var(--ice2); color: var(--text);
+        padding: 7px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+        font-family: 'Source Sans 3', sans-serif;
+        cursor: pointer; transition: all 0.2s; white-space: nowrap;
+      }
+      .filter-btn:hover, .filter-btn.active { background: var(--ocean); border-color: var(--ocean); color: #fff; }
+
+      .species-section { padding: 4rem 0; }
+      .section-heading {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700; font-size: 1.6rem; color: var(--ocean-dark);
+        margin-bottom: 2rem; padding-bottom: 0.75rem;
+        border-bottom: 3px solid var(--ice2);
+        display: flex; align-items: center; gap: 10px;
+      }
+      .section-heading span { font-size: 1.3rem; }
+
+      .sp-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+        border: 1px solid rgba(0,0,0,0.06);
+        height: 100%;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+      }
+      .sp-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(36,113,163,0.15); }
+      .sp-card-img {
+        height: 180px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 4.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .sp-card-body { padding: 1.4rem; }
+      .sp-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem; color: var(--ocean-dark); margin-bottom: 0.25rem; }
+      .sp-sci { font-style: italic; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+      .sp-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
+      .sp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+      .sp-tag { font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 50px; }
+      .tag-lc { background: #d5f5e3; color: #1e8449; }
+      .tag-vu { background: #fdebd0; color: #b7770d; }
+      .tag-en { background: #fadbd8; color: #c0392b; }
+      .tag-nt { background: #d6eaf8; color: #1a5276; }
+      .sp-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--ice1); padding-top: 0.75rem; }
+      .sp-meta span { display: flex; align-items: center; gap: 4px; }
+      .sp-meta i { color: var(--ocean); }
+
+      .bg-emperor { background: linear-gradient(135deg, #1a4f72, #2471a3); }
+      .bg-king { background: linear-gradient(135deg, #784212, #ca6f1e); }
+      .bg-african { background: linear-gradient(135deg, #1a5276, #2e86c1); }
+      .bg-macaroni { background: linear-gradient(135deg, #6c3483, #9b59b6); }
+      .bg-gentoo { background: linear-gradient(135deg, #1e8449, #27ae60); }
+      .bg-chinstrap { background: linear-gradient(135deg, #1a4f72, #5d8aa8); }
+      .bg-little { background: linear-gradient(135deg, #154360, #1a6b9a); }
+      .bg-rockhopper { background: linear-gradient(135deg, #7b241c, #e74c3c); }
+      .bg-magellanic { background: linear-gradient(135deg, #0e6655, #17a589); }
+
+      .compare-section {
+        background: var(--ocean-dark);
+        color: #fff;
+        padding: 5rem 0;
+      }
+      .compare-section h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 0.5rem; }
+      .compare-section p { color: rgba(255,255,255,0.75); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; }
+      .compare-bar-wrap { margin-bottom: 1.5rem; }
+      .compare-label { display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 0.4rem; }
+      .compare-bar-bg { background: rgba(255,255,255,0.1); border-radius: 50px; height: 10px; overflow: hidden; }
+      .compare-bar { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #2e86c1, #5dade2); transition: width 1.2s ease; }
+
+      .sp-modal .modal-content { border-radius: 20px; overflow: hidden; border: none; }
+      .sp-modal .modal-header { border-bottom: none; padding: 2rem 2rem 1rem; }
+      .sp-modal .modal-body { padding: 0 2rem 2rem; }
+      .sp-modal .modal-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.6rem; }
+      .detail-row { display: flex; gap: 1rem; margin-bottom: 0.6rem; align-items: flex-start; }
+      .detail-row i { color: var(--ocean); margin-top: 3px; flex-shrink: 0; }
+      .detail-row span { font-size: 0.93rem; color: var(--text-muted); line-height: 1.5; }
+      .detail-row strong { color: var(--text); }
+
+      footer { background: var(--ocean-dark); padding: 2.5rem 0; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.88rem; }
+      footer a { color: rgba(255,255,255,0.75); text-decoration: none; }
+      footer a:hover { color: #fff; }
+
+      .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+      .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">🐧 PenguinWorld</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav ms-auto gap-1">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="species.html">Species</a></li>
+            <li class="nav-item"><a class="nav-link" href="facts.html">Fun Facts</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="page-hero">
+      <div class="container">
+        <div class="col-lg-7">
+          <div style="font-size:0.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:0.75rem;">Explore All 18 Species</div>
+          <h1>Meet the Penguin Family</h1>
+          <p>From towering Emperors to tiny Little Blues, each species has evolved remarkable adaptations to thrive in environments ranging from Antarctic ice to tropical islands.</p>
+        </div>
+      </div>
+      <div class="hero-wave">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+          <path d="M0,30 C480,60 960,0 1440,30 L1440,60 L0,60 Z" fill="#f0f8ff"/>
+        </svg>
+      </div>
+    </section>
+
+    <div class="filter-bar">
+      <div class="container">
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+          <span style="font-size:0.82rem;font-weight:700;color:#5d6d7e;margin-right:4px;">Filter:</span>
+          <button class="filter-btn active" data-filter="all">All Species</button>
+          <button class="filter-btn" data-filter="lc">Least Concern</button>
+          <button class="filter-btn" data-filter="nt">Near Threatened</button>
+          <button class="filter-btn" data-filter="vu">Vulnerable</button>
+          <button class="filter-btn" data-filter="en">Endangered</button>
+          <button class="filter-btn" data-filter="large">Large</button>
+          <button class="filter-btn" data-filter="small">Small</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="species-section">
+      <div class="container">
+
+        <div class="section-heading reveal"><span>🌊</span> Great Penguins</div>
+        <div class="row g-4 mb-5" id="sp-grid">
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="lc" data-size="large">
+            <div class="sp-card" onclick="showModal('Emperor Penguin','Aptenodytes forsteri','bg-emperor','🐧','The largest of all penguin species, Emperor penguins are true survivors of the Antarctic. They breed during the brutal Antarctic winter, with males incubating eggs on their feet for 65 days through -76°F temperatures and 100 mph winds — all without eating.','Least Concern','120 cm / 47 in','22–45 kg / 49–99 lbs','Antarctica (sea ice colonies)','Fish, squid, krill','70 years (wild: 20)','~600,000')">
+              <div class="sp-card-img bg-emperor">🐧</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Emperor Penguin</div>
+                <div class="sp-sci">Aptenodytes forsteri</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-lc">Least Concern</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Large</span>
+                </div>
+                <div class="sp-desc">The largest penguin. Males incubate eggs in -76°F Antarctic winter for 65 days without food.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 120 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Antarctica</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="lc" data-size="large">
+            <div class="sp-card" onclick="showModal('King Penguin','Aptenodytes patagonicus','bg-king','👑','The second largest penguin, King penguins are striking birds with vivid orange-gold patches on their necks and bills. They breed on sub-Antarctic islands and take 14–16 months to raise a single chick, making them one of the slowest-breeding birds.','Least Concern','94 cm / 37 in','9.3–18 kg / 20–40 lbs','Sub-Antarctic Islands','Fish, squid','25 years','~2 million')">
+              <div class="sp-card-img bg-king">👑</div>
+              <div class="sp-card-body">
+                <div class="sp-name">King Penguin</div>
+                <div class="sp-sci">Aptenodytes patagonicus</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-lc">Least Concern</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Large</span>
+                </div>
+                <div class="sp-desc">Second largest penguin with brilliant orange markings. Takes 14–16 months to raise one chick.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 94 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Sub-Antarctic</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="en" data-size="large">
+            <div class="sp-card" onclick="showModal('African Penguin','Spheniscus demersus','bg-african','🌍','The only penguin native to Africa, African penguins are critically threatened with extinction. Their population has plummeted from 1.5 million in 1910 to under 50,000 today due to overfishing, oil spills, and habitat loss. They make a donkey-like braying call, earning the nickname Jackass Penguin.','Endangered','68 cm / 27 in','2.2–3.5 kg / 5–8 lbs','South Africa, Namibia','Anchovy, sardines, squid','10–27 years','~50,000')">
+              <div class="sp-card-img bg-african">🌍</div>
+              <div class="sp-card-body">
+                <div class="sp-name">African Penguin</div>
+                <div class="sp-sci">Spheniscus demersus</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-en">Endangered</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Medium</span>
+                </div>
+                <div class="sp-desc">Only African penguin, critically threatened. Population fell 97% from 1910 to today.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 68 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> South Africa</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="vu" data-size="small">
+            <div class="sp-card" onclick="showModal('Macaroni Penguin','Eudyptes chrysolophus','bg-macaroni','🎭','Named after the 18th-century fashion of wearing extravagant hats (called macaroni), these flamboyant penguins sport spectacular golden-yellow crests. With over 18 million individuals, they are the most numerous penguin species — yet they are classified as Vulnerable due to rapid population decline.','Vulnerable','70 cm / 28 in','3.3–6.4 kg / 7–14 lbs','Sub-Antarctic Islands, S. America','Krill, fish, squid','15–20 years','~18 million')">
+              <div class="sp-card-img bg-macaroni">🎭</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Macaroni Penguin</div>
+                <div class="sp-sci">Eudyptes chrysolophus</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-vu">Vulnerable</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Medium</span>
+                </div>
+                <div class="sp-desc">The most numerous penguin with 18M individuals, yet Vulnerable. Famous for golden head crests.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 70 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Sub-Antarctic</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="lc" data-size="large">
+            <div class="sp-card" onclick="showModal('Gentoo Penguin','Pygoscelis papua','bg-gentoo','🏃','Gentoo penguins are the fastest swimmers of any diving bird, reaching speeds of up to 22 mph. They are easily recognized by the white stripe across the top of their head. They have the most elaborate courtship rituals of any penguin — males present pebbles as gifts to attract mates.','Least Concern','75–90 cm / 30–35 in','4.9–8.5 kg / 11–19 lbs','Antarctic Peninsula, Sub-Antarctic','Fish, krill, squid','15–20 years','~600,000')">
+              <div class="sp-card-img bg-gentoo">🏃</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Gentoo Penguin</div>
+                <div class="sp-sci">Pygoscelis papua</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-lc">Least Concern</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Large</span>
+                </div>
+                <div class="sp-desc">Fastest penguin at 22 mph swimming. Males gift pebbles to woo mates.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 75–90 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Antarctic</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="lc" data-size="large">
+            <div class="sp-card" onclick="showModal('Chinstrap Penguin','Pygoscelis antarcticus','bg-chinstrap','😤','Named for the thin black band under their chin — like a helmet strap — chinstrap penguins are feisty and bold. They are one of the most abundant penguins in Antarctica. Recent research found they take thousands of microsleeps of just 4 seconds each, totaling 11 hours of cumulative sleep per day.','Least Concern','72 cm / 28 in','3.2–5 kg / 7–11 lbs','Antarctic Peninsula, South Atlantic','Krill, fish','20 years','~8 million')">
+              <div class="sp-card-img bg-chinstrap">😤</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Chinstrap Penguin</div>
+                <div class="sp-sci">Pygoscelis antarcticus</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-lc">Least Concern</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Medium</span>
+                </div>
+                <div class="sp-desc">Named for their helmet-strap chin band. They sleep in thousands of 4-second microsleeps daily.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 72 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Antarctica</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="lc" data-size="small">
+            <div class="sp-card" onclick="showModal('Little Blue Penguin','Eudyptula minor','bg-little','💙','The smallest penguin species in the world, standing just 33 cm tall. Little Blue Penguins (also called Fairy Penguins) are native to Australia and New Zealand. They return to their burrows at dusk in groups called parades, and have been known to adopt chicks that are not their own.','Least Concern','33 cm / 13 in','1–1.5 kg / 2–3 lbs','Australia, New Zealand','Fish, squid, crustaceans','6–7 years','~1 million')">
+              <div class="sp-card-img bg-little">💙</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Little Blue Penguin</div>
+                <div class="sp-sci">Eudyptula minor</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-lc">Least Concern</span>
+                  <span class="sp-tag" style="background:#fef9e7;color:#9c7a14;">Small</span>
+                </div>
+                <div class="sp-desc">World's smallest penguin at just 33 cm. Famous for their nightly "penguin parades" along beaches.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 33 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Australia, NZ</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="vu" data-size="small">
+            <div class="sp-card" onclick="showModal('Rockhopper Penguin','Eudyptes chrysocome','bg-rockhopper','🎸','Rockhoppers are the most widespread crested penguins and among the most aggressive. They get their name from their habit of hopping between rocks rather than tobogganing. They have distinctive red eyes and spiky yellow-black head plumes. Their populations have declined by 30% over three generations.','Vulnerable','45–58 cm / 18–23 in','2–3.4 kg / 4–7 lbs','Sub-Antarctic Islands, S. America','Krill, fish, squid, crustaceans','10 years','~3.5 million')">
+              <div class="sp-card-img bg-rockhopper">🎸</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Rockhopper Penguin</div>
+                <div class="sp-sci">Eudyptes chrysocome</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-vu">Vulnerable</span>
+                  <span class="sp-tag" style="background:#fef9e7;color:#9c7a14;">Small</span>
+                </div>
+                <div class="sp-desc">Feisty, red-eyed climbers with spiky yellow plumes. Population declined 30% over three generations.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 45–58 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> Sub-Antarctic</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4 reveal sp-item" data-status="nt" data-size="large">
+            <div class="sp-card" onclick="showModal('Magellanic Penguin','Spheniscus magellanicus','bg-magellanic','🌿','Magellanic penguins are medium-sized penguins that breed in coastal Argentina, Chile, and the Falkland Islands. They are highly migratory, traveling up to 3,000 km from their breeding colonies to wintering areas off the coast of Brazil. Named after explorer Ferdinand Magellan, who spotted them in 1520.','Near Threatened','70 cm / 28 in','2.7–6.5 kg / 6–14 lbs','Argentina, Chile, Falkland Islands','Sardines, squid, krill','25 years','~1.5 million')">
+              <div class="sp-card-img bg-magellanic">🌿</div>
+              <div class="sp-card-body">
+                <div class="sp-name">Magellanic Penguin</div>
+                <div class="sp-sci">Spheniscus magellanicus</div>
+                <div class="sp-tags">
+                  <span class="sp-tag tag-nt">Near Threatened</span>
+                  <span class="sp-tag" style="background:#d6eaf8;color:#1a5276;">Large</span>
+                </div>
+                <div class="sp-desc">Named for Magellan's 1520 expedition. Migrates 3,000 km from breeding colonies each year.</div>
+                <div class="sp-meta">
+                  <span><i class="bi bi-rulers"></i> 70 cm</span>
+                  <span><i class="bi bi-geo-alt"></i> S. America</span>
+                  <span><i class="bi bi-info-circle"></i> Learn More</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="reveal" id="no-results" style="display:none; text-align:center; padding:3rem 0; color:var(--text-muted);">
+          <div style="font-size:3rem;">🔍</div>
+          <p class="mt-2">No species match that filter. Try a different one!</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="compare-section">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-5 reveal">
+            <div style="font-size:0.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Size Comparison</div>
+            <h2>How Big Are They Really?</h2>
+            <p>Penguin species vary enormously in size — from the towering Emperor standing at 4 feet tall to the diminutive Little Blue, barely the height of a ruler.</p>
+            <a href="facts.html" style="color:#5dade2;font-weight:600;text-decoration:none;">See all fun facts <i class="bi bi-arrow-right"></i></a>
+          </div>
+          <div class="col-lg-7 reveal">
+            <div class="compare-bar-wrap">
+              <div class="compare-label"><span>Emperor</span><span>120 cm</span></div>
+              <div class="compare-bar-bg"><div class="compare-bar" data-width="100" style="width:0%"></div></div>
+            </div>
+            <div class="compare-bar-wrap">
+              <div class="compare-label"><span>King</span><span>94 cm</span></div>
+              <div class="compare-bar-bg"><div class="compare-bar" data-width="78" style="width:0%;background:linear-gradient(90deg,#ca6f1e,#f0a830)"></div></div>
+            </div>
+            <div class="compare-bar-wrap">
+              <div class="compare-label"><span>Gentoo</span><span>83 cm</span></div>
+              <div class="compare-bar-bg"><div class="compare-bar" data-width="69" style="width:0%;background:linear-gradient(90deg,#1e8449,#27ae60)"></div></div>
+            </div>
+            <div class="compare-bar-wrap">
+              <div class="compare-label"><span>Magellanic</span><span>70 cm</span></div>
+              <div class="compare-bar-bg"><div class="compare-bar" data-width="58" style="width:0%;background:linear-gradient(90deg,#0e6655,#17a589)"></div></div>
+            </div>
+            <div class="compare-bar-wrap">
+              <div class="compare-label"><span>Rockhopper</span><span>52 cm</span></div>
+              <div class="compare-bar-bg"><div class="compare-bar" data-width="43" style="width:0%;background:linear-gradient(90deg,#7b241c,#e74c3c)"></div></div>
+            </div>
+            <div class="compare-bar-wrap">
+              <div class="compare-label"><span>Little Blue</span><span>33 cm</span></div>
+              <div class="compare-bar-bg"><div class="compare-bar" data-width="28" style="width:0%;background:linear-gradient(90deg,#154360,#2e86c1)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p class="mb-1">🐧 <strong>PenguinWorld</strong> — Celebrating penguins everywhere</p>
+        <p class="mb-0"><a href="index.html">Home</a> &nbsp;|&nbsp; <a href="species.html">Species</a> &nbsp;|&nbsp; <a href="facts.html">Fun Facts</a></p>
+      </div>
+    </footer>
+
+    <div class="modal fade sp-modal" id="spModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header" id="modal-header-bg">
+            <div>
+              <div id="modal-emoji" style="font-size:3rem;line-height:1;margin-bottom:0.5rem;"></div>
+              <h5 class="modal-title" id="modal-title"></h5>
+              <div id="modal-sci" style="font-style:italic;font-size:0.88rem;opacity:0.7;"></div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter:invert(1);"></button>
+          </div>
+          <div class="modal-body">
+            <p id="modal-desc" style="font-size:0.95rem;line-height:1.7;color:#5d6d7e;margin-bottom:1.5rem;"></p>
+            <div class="row g-3" id="modal-details"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const revEls = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 70); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.08 });
+      revEls.forEach(el => obs.observe(el));
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          const items = document.querySelectorAll('.sp-item');
+          let shown = 0;
+          items.forEach(item => {
+            const show = filter === 'all' || item.dataset.status === filter || item.dataset.size === filter;
+            item.style.display = show ? '' : 'none';
+            if (show) shown++;
+          });
+          document.getElementById('no-results').style.display = shown === 0 ? 'block' : 'none';
+        });
+      });
+
+      const barObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.compare-bar').forEach(bar => {
+              bar.style.width = bar.dataset.width + '%';
+            });
+            barObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      document.querySelectorAll('.compare-section').forEach(el => barObs.observe(el));
+
+      function showModal(name, sci, bgClass, emoji, desc, status, height, weight, habitat, diet, lifespan, population) {
+        document.getElementById('modal-title').textContent = name;
+        document.getElementById('modal-sci').textContent = sci;
+        document.getElementById('modal-emoji').textContent = emoji;
+        document.getElementById('modal-desc').textContent = desc;
+        const hdr = document.getElementById('modal-header-bg');
+        hdr.className = 'modal-header ' + bgClass;
+        hdr.style.color = '#fff';
+        const details = [
+          ['bi-rulers', 'Height', height],
+          ['bi-droplet-half', 'Weight', weight],
+          ['bi-geo-alt', 'Habitat', habitat],
+          ['bi-egg-fried', 'Diet', diet],
+          ['bi-hourglass-split', 'Lifespan', lifespan],
+          ['bi-people', 'Population', population],
+          ['bi-shield', 'IUCN Status', status],
+        ];
+        document.getElementById('modal-details').innerHTML = details.map(([icon, label, val]) =>
+          `<div class="col-6 col-md-4">
+            <div style="background:#f8fbff;border-radius:12px;padding:0.9rem;border:1px solid #daeef8;">
+              <div style="color:#2471a3;font-size:1.1rem;margin-bottom:4px;"><i class="bi ${icon}"></i></div>
+              <div style="font-size:0.75rem;font-weight:700;color:#5d6d7e;letter-spacing:1px;text-transform:uppercase;">${label}</div>
+              <div style="font-size:0.92rem;font-weight:600;color:#1c2833;margin-top:2px;">${val}</div>
+            </div>
+          </div>`
+        ).join('');
+        new bootstrap.Modal(document.getElementById('spModal')).show();
+      }
+    </script>
+  </body>
+</html>

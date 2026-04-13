@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PenguinWorld - Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <style>
+      :root {
+        --deep: #0a1628;
+        --mid: #0d2247;
+        --accent: #1a6b9a;
+        --light: #2899cc;
+        --ice: #e8f4f8;
+        --gold: #f0c040;
+      }
+      * { box-sizing: border-box; }
+      body { font-family: 'Montserrat', sans-serif; background: var(--deep); color: var(--ice); margin: 0; }
+
+      .navbar {
+        background: rgba(10,22,40,0.96) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(40,153,204,0.2);
+        padding: 1rem 0;
+      }
+      .navbar-brand { font-weight: 800; font-size: 1.4rem; color: var(--gold) !important; letter-spacing: 1px; }
+      .nav-link { color: var(--ice) !important; font-weight: 600; font-size: 0.95rem; padding: 0.5rem 1rem !important; transition: color 0.2s; }
+      .nav-link:hover, .nav-link.active { color: var(--gold) !important; }
+      .navbar-toggler { border-color: rgba(255,255,255,0.3); }
+      .navbar-toggler-icon { filter: invert(1); }
+
+      .hero {
+        min-height: 100vh;
+        background: linear-gradient(160deg, var(--deep) 0%, var(--mid) 50%, #0d3d6e 100%);
+        display: flex; align-items: center;
+        position: relative; overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse at 70% 50%, rgba(26,107,154,0.25) 0%, transparent 60%);
+        pointer-events: none;
+      }
+      .hero-waves { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; line-height: 0; }
+      .hero-waves svg { display: block; width: 100%; height: 80px; }
+      .hero-badge {
+        display: inline-block;
+        background: rgba(240,192,64,0.15); border: 1px solid rgba(240,192,64,0.4);
+        color: var(--gold); font-size: 0.78rem; font-weight: 700; letter-spacing: 2px;
+        text-transform: uppercase; padding: 6px 16px; border-radius: 50px; margin-bottom: 1.5rem;
+      }
+      .hero h1 { font-size: clamp(2.4rem, 6vw, 4.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; }
+      .hero h1 span { color: var(--light); }
+      .hero p { font-size: 1.1rem; font-weight: 300; line-height: 1.8; color: rgba(232,244,248,0.8); max-width: 540px; }
+      .btn-primary-cust {
+        background: linear-gradient(135deg, var(--light), var(--accent));
+        color: #fff; border: none; padding: 13px 30px; border-radius: 50px;
+        font-weight: 600; font-size: 0.95rem; font-family: 'Montserrat', sans-serif;
+        text-decoration: none; transition: transform 0.25s, box-shadow 0.25s; display: inline-block;
+      }
+      .btn-primary-cust:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(40,153,204,0.4); color: #fff; }
+      .btn-outline-cust {
+        background: transparent; color: var(--ice); border: 2px solid rgba(232,244,248,0.4);
+        padding: 11px 28px; border-radius: 50px; font-weight: 600; font-size: 0.95rem;
+        font-family: 'Montserrat', sans-serif; text-decoration: none; transition: border-color 0.25s, color 0.25s; display: inline-block;
+      }
+      .btn-outline-cust:hover { border-color: var(--gold); color: var(--gold); }
+      .hero-emoji { font-size: clamp(6rem, 14vw, 11rem); animation: float 4s ease-in-out infinite; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5)); text-align: center; }
+      @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+      .stat-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 7px 16px; font-size: 0.88rem; font-weight: 600; margin: 4px; }
+      .stat-pill i { color: var(--gold); }
+
+      .section-dark { background: var(--mid); padding: 6rem 0; }
+      .section-deep { background: var(--deep); padding: 6rem 0; }
+      .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+      .section-title { font-size: clamp(1.8rem, 4vw, 2.7rem); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+      .section-title span { color: var(--light); }
+      .section-sub { color: rgba(232,244,248,0.65); font-size: 1rem; font-weight: 300; line-height: 1.8; }
+
+      .feat-card {
+        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
+        padding: 1.75rem; height: 100%; transition: transform 0.3s, border-color 0.3s, background 0.3s;
+      }
+      .feat-card:hover { transform: translateY(-5px); border-color: rgba(40,153,204,0.4); background: rgba(40,153,204,0.07); }
+      .feat-icon { width: 52px; height: 52px; background: linear-gradient(135deg, rgba(40,153,204,0.2), rgba(26,107,154,0.2)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1.1rem; border: 1px solid rgba(40,153,204,0.25); }
+      .feat-card h5 { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.6rem; color: var(--ice); }
+      .feat-card p { color: rgba(232,244,248,0.6); font-size: 0.9rem; line-height: 1.7; margin: 0; }
+
+      .stats-strip { background: linear-gradient(135deg, var(--accent), var(--light)); padding: 4rem 0; position: relative; overflow: hidden; }
+      .stats-strip::after { content:'🐧'; position:absolute; right:-10px; top:50%; transform:translateY(-50%); font-size:12rem; opacity:0.07; }
+      .big-num { font-size: 3.2rem; font-weight: 800; color: #fff; line-height: 1; }
+      .big-lbl { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.82); letter-spacing: 1px; margin-top: 4px; }
+
+      .quote-block { border-left: 4px solid var(--gold); padding: 1.4rem 1.8rem; background: rgba(240,192,64,0.06); border-radius: 0 12px 12px 0; font-style: italic; font-size: 1.1rem; color: rgba(232,244,248,0.85); line-height: 1.8; }
+
+      footer { background: #060e1c; padding: 2.5rem 0; text-align: center; color: rgba(232,244,248,0.4); font-size: 0.88rem; border-top: 1px solid rgba(255,255,255,0.06); }
+      footer a { color: var(--light); text-decoration: none; }
+      footer a:hover { color: var(--gold); }
+
+      .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+      .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+    <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">🐧 PenguinWorld</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav ms-auto gap-1">
+            <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="species.html">Species</a></li>
+            <li class="nav-item"><a class="nav-link" href="facts.html">Fun Facts</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="container pt-5">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-7">
+            <div class="hero-badge"><i class="bi bi-globe-americas me-2"></i>Antarctica & Beyond</div>
+            <h1>Discover the World of <span>Penguins</span></h1>
+            <p>From the icy shores of Antarctica to the sun-drenched coasts of South Africa, penguins are among nature's most remarkable and charismatic creatures.</p>
+            <div class="d-flex flex-wrap gap-3 mt-4 mb-5">
+              <a href="species.html" class="btn-primary-cust">Explore Species <i class="bi bi-arrow-right ms-1"></i></a>
+              <a href="facts.html" class="btn-outline-cust">Fun Facts</a>
+            </div>
+            <div>
+              <span class="stat-pill"><i class="bi bi-geo-alt-fill"></i>18 Species</span>
+              <span class="stat-pill"><i class="bi bi-water"></i>6 Continents</span>
+              <span class="stat-pill"><i class="bi bi-heart-fill"></i>Wild & Wonderful</span>
+            </div>
+          </div>
+          <div class="col-lg-5 d-flex justify-content-center">
+            <div class="hero-emoji">🐧</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-waves">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+          <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#0d2247"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="section-dark">
+      <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+          <div class="col-lg-7 reveal">
+            <div class="section-label">Why Penguins</div>
+            <h2 class="section-title">Nature's Most <span>Fascinating</span> Birds</h2>
+            <p class="section-sub">Penguins defy expectations — flightless yet lightning-fast swimmers, cold-climate survivors thriving in Earth's most extreme environments.</p>
+          </div>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="feat-card">
+              <div class="feat-icon">🌊</div>
+              <h5>Master Swimmers</h5>
+              <p>Penguins reach speeds of up to 25 mph underwater, using their wings as powerful flippers to slice through the ocean.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="feat-card">
+              <div class="feat-icon">🧊</div>
+              <h5>Cold Warriors</h5>
+              <p>Emperor penguins endure Antarctic winters at -76°F, huddling in groups of thousands to survive brutal blizzards.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="feat-card">
+              <div class="feat-icon">💞</div>
+              <h5>Devoted Partners</h5>
+              <p>Many species mate for life, returning to the same partner each season, recognizing each other by their unique calls.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="feat-card">
+              <div class="feat-icon">🐣</div>
+              <h5>Dedicated Parents</h5>
+              <p>Male Emperor penguins balance eggs on their feet for 65 days through brutal Antarctic winter without eating anything.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="feat-card">
+              <div class="feat-icon">🎨</div>
+              <h5>Diverse Species</h5>
+              <p>From the towering 4-foot Emperor to the tiny 13-inch Little Blue, 18 remarkable species span the southern hemisphere.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4 reveal">
+            <div class="feat-card">
+              <div class="feat-icon">🔬</div>
+              <h5>Ancient Lineage</h5>
+              <p>Penguins have existed for over 60 million years, evolving shortly after the dinosaurs went extinct.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats-strip reveal">
+      <div class="container">
+        <div class="row text-center g-4">
+          <div class="col-6 col-md-3"><div class="big-num">18</div><div class="big-lbl">Living Species</div></div>
+          <div class="col-6 col-md-3"><div class="big-num">60M</div><div class="big-lbl">Years on Earth</div></div>
+          <div class="col-6 col-md-3"><div class="big-num">25</div><div class="big-lbl">mph Swim Speed</div></div>
+          <div class="col-6 col-md-3"><div class="big-num">10</div><div class="big-lbl">Threatened Species</div></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section-deep">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6 reveal">
+            <div class="section-label">About This Site</div>
+            <h2 class="section-title">A Celebration of <span>Penguin Life</span></h2>
+            <p class="section-sub mb-4">This website explores the biology, behavior, and conservation of penguins worldwide. Climate change and habitat loss threaten their future — understanding them is the first step to protecting them.</p>
+            <div class="quote-block">"Penguins are an indicator species. When they're doing well, the whole ocean ecosystem is usually thriving too."</div>
+          </div>
+          <div class="col-lg-6 reveal">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="feat-card text-center py-4">
+                  <div style="font-size:2.8rem;">🌍</div>
+                  <h6 class="mt-3 mb-1" style="font-weight:700;">6 Continents</h6>
+                  <small style="color:rgba(232,244,248,0.6);">Spotted across the globe</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="feat-card text-center py-4">
+                  <div style="font-size:2.8rem;">🏔️</div>
+                  <h6 class="mt-3 mb-1" style="font-weight:700;">Diverse Habitats</h6>
+                  <small style="color:rgba(232,244,248,0.6);">Ice to tropical coasts</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="feat-card text-center py-4">
+                  <div style="font-size:2.8rem;">🔭</div>
+                  <h6 class="mt-3 mb-1" style="font-weight:700;">Active Research</h6>
+                  <small style="color:rgba(232,244,248,0.6);">Scientists worldwide</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="feat-card text-center py-4">
+                  <div style="font-size:2.8rem;">🛡️</div>
+                  <h6 class="mt-3 mb-1" style="font-weight:700;">Conservation</h6>
+                  <small style="color:rgba(232,244,248,0.6);">Protecting the future</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-dark text-center" style="padding:5rem 0;">
+      <div class="container reveal">
+        <h2 class="section-title mb-3">Ready to Dive Deeper?</h2>
+        <p class="section-sub mx-auto mb-4" style="max-width:480px;">Explore all 18 species or browse our curated list of surprising penguin facts.</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <a href="species.html" class="btn-primary-cust">View All Species</a>
+          <a href="facts.html" class="btn-outline-cust">Explore Fun Facts</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p class="mb-1">🐧 <strong>PenguinWorld</strong> — Celebrating penguins everywhere</p>
+        <p class="mb-0"><a href="index.html">Home</a> &nbsp;|&nbsp; <a href="species.html">Species</a> &nbsp;|&nbsp; <a href="facts.html">Fun Facts</a></p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const revEls = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.1 });
+      revEls.forEach(el => obs.observe(el));
+    </script>
+  </body>
+</html>

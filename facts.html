@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PenguinWorld - Fun Facts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;600;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #111418;
+        --surface: #1a1f26;
+        --surface2: #222831;
+        --border: rgba(255,255,255,0.08);
+        --text: #e8ecf0;
+        --muted: #7a8694;
+        --amber: #f5a623;
+        --teal: #00c9a7;
+        --coral: #ff6b6b;
+        --sky: #4fc3f7;
+        --lime: #b5e853;
+      }
+      * { box-sizing: border-box; }
+      body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+
+      .navbar {
+        background: rgba(17,20,24,0.97) !important;
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+      }
+      .navbar-brand { font-family: 'Roboto Slab', serif; font-weight: 800; font-size: 1.4rem; color: var(--amber) !important; }
+      .nav-link { color: var(--text) !important; font-weight: 500; font-size: 0.95rem; padding: 0.5rem 1rem !important; transition: color 0.2s; }
+      .nav-link:hover, .nav-link.active { color: var(--amber) !important; }
+      .navbar-toggler { border-color: rgba(255,255,255,0.2); }
+      .navbar-toggler-icon { filter: invert(1); }
+
+      .page-hero {
+        background: var(--surface);
+        padding: 8rem 0 5rem;
+        position: relative; overflow: hidden;
+        border-bottom: 1px solid var(--border);
+      }
+      .page-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse at 30% 50%, rgba(245,166,35,0.08) 0%, transparent 60%);
+      }
+      .page-hero::after {
+        content: '🐧';
+        position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+        font-size: clamp(6rem, 12vw, 10rem); opacity: 0.08;
+      }
+      .page-hero h1 { font-family: 'Roboto Slab', serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.1; margin-bottom: 1rem; }
+      .page-hero h1 em { font-style: normal; color: var(--amber); }
+      .page-hero p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 540px; }
+
+      .facts-nav {
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 0;
+        position: sticky; top: 72px; z-index: 100;
+      }
+      .cat-btn {
+        background: transparent; border: 1px solid var(--border); color: var(--muted);
+        padding: 6px 16px; border-radius: 8px; font-size: 0.82rem; font-weight: 500;
+        font-family: 'Roboto', sans-serif;
+        cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+      }
+      .cat-btn:hover, .cat-btn.active { background: var(--amber); border-color: var(--amber); color: #111; font-weight: 700; }
+
+      .facts-section { padding: 5rem 0; }
+      .facts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
+
+      .fact-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.6rem;
+        transition: transform 0.3s, border-color 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+      .fact-card::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        border-radius: 16px 16px 0 0;
+      }
+      .fact-card.cat-biology::before { background: var(--teal); }
+      .fact-card.cat-behavior::before { background: var(--coral); }
+      .fact-card.cat-survival::before { background: var(--sky); }
+      .fact-card.cat-records::before { background: var(--amber); }
+      .fact-card.cat-conservation::before { background: var(--lime); }
+      .fact-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+      .fact-num {
+        font-family: 'Roboto Slab', serif;
+        font-weight: 800; font-size: 2.5rem; line-height: 1;
+        margin-bottom: 0.75rem;
+      }
+      .fact-card.cat-biology .fact-num { color: var(--teal); }
+      .fact-card.cat-behavior .fact-num { color: var(--coral); }
+      .fact-card.cat-survival .fact-num { color: var(--sky); }
+      .fact-card.cat-records .fact-num { color: var(--amber); }
+      .fact-card.cat-conservation .fact-num { color: var(--lime); }
+      .fact-unit { font-size: 1rem; font-weight: 400; opacity: 0.7; margin-left: 2px; }
+      .fact-title { font-family: 'Roboto Slab', serif; font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 0.5rem; }
+      .fact-body { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+      .fact-cat-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 3px 10px; border-radius: 50px; margin-bottom: 0.75rem; }
+      .tag-biology { background: rgba(0,201,167,0.15); color: var(--teal); }
+      .tag-behavior { background: rgba(255,107,107,0.15); color: var(--coral); }
+      .tag-survival { background: rgba(79,195,247,0.15); color: var(--sky); }
+      .tag-records { background: rgba(245,166,35,0.15); color: var(--amber); }
+      .tag-conservation { background: rgba(181,232,83,0.15); color: var(--lime); }
+
+      .hidden-fact { display: none; }
+
+      .quiz-section {
+        background: var(--surface);
+        padding: 5rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+      .quiz-section h2 { font-family: 'Roboto Slab', serif; font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.4rem); color: var(--text); margin-bottom: 0.5rem; }
+      .quiz-section p { color: var(--muted); }
+      .quiz-card {
+        background: var(--surface2); border: 1px solid var(--border); border-radius: 16px;
+        padding: 1.75rem; margin-bottom: 0;
+      }
+      .quiz-question { font-family: 'Roboto Slab', serif; font-weight: 700; font-size: 1.05rem; color: var(--text); margin-bottom: 1.1rem; }
+      .quiz-option {
+        background: var(--bg); border: 1px solid var(--border); color: var(--text);
+        padding: 10px 16px; border-radius: 10px; width: 100%;
+        text-align: left; font-size: 0.9rem; font-family: 'Roboto', sans-serif;
+        margin-bottom: 8px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+      }
+      .quiz-option:hover:not([disabled]) { background: rgba(245,166,35,0.08); border-color: var(--amber); }
+      .quiz-option.correct { background: rgba(0,201,167,0.15) !important; border-color: var(--teal) !important; color: var(--teal) !important; }
+      .quiz-option.wrong { background: rgba(255,107,107,0.15) !important; border-color: var(--coral) !important; color: var(--coral) !important; }
+      .quiz-feedback { font-size: 0.88rem; margin-top: 0.5rem; min-height: 1.4rem; color: var(--muted); }
+      .quiz-score { font-family: 'Roboto Slab', serif; font-size: 1.1rem; font-weight: 700; color: var(--amber); }
+      .btn-quiz-next {
+        background: var(--amber); color: #111; border: none; padding: 10px 24px; border-radius: 10px;
+        font-weight: 700; font-size: 0.9rem; font-family: 'Roboto', sans-serif;
+        cursor: pointer; transition: opacity 0.2s; margin-top: 0.75rem;
+      }
+      .btn-quiz-next:hover { opacity: 0.85; }
+      .btn-quiz-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      .timeline-section { padding: 5rem 0; }
+      .timeline-section h2 { font-family: 'Roboto Slab', serif; font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.4rem); color: var(--text); margin-bottom: 0.5rem; }
+      .tl-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; position: relative; }
+      .tl-item::before { content:''; position:absolute; left:20px; top:40px; bottom:-24px; width:2px; background:var(--border); }
+      .tl-item:last-child::before { display: none; }
+      .tl-dot { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; border: 2px solid; }
+      .tl-content { padding-top: 6px; }
+      .tl-year { font-family: 'Roboto Slab', serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; }
+      .tl-text { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+      footer { background: #0a0c0f; padding: 2.5rem 0; text-align: center; color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--border); }
+      footer a { color: var(--sky); text-decoration: none; }
+      footer a:hover { color: var(--amber); }
+
+      .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+      .reveal.visible { opacity: 1; transform: translateY(0); }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">🐧 PenguinWorld</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav ms-auto gap-1">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="species.html">Species</a></li>
+            <li class="nav-item"><a class="nav-link active" href="facts.html">Fun Facts</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="page-hero">
+      <div class="container">
+        <div class="col-lg-7">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;">Did You Know?</div>
+          <h1>Surprising Penguin <em>Facts</em></h1>
+          <p>Penguins are full of surprises. From their ancient history to their unusual sleeping habits, every fact reveals a deeper layer of these remarkable birds.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="facts-nav">
+      <div class="container">
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="cat-btn active" data-cat="all">🐧 All Facts</button>
+          <button class="cat-btn" data-cat="biology">🧬 Biology</button>
+          <button class="cat-btn" data-cat="behavior">💞 Behavior</button>
+          <button class="cat-btn" data-cat="survival">🛡 Survival</button>
+          <button class="cat-btn" data-cat="records">🏆 Records</button>
+          <button class="cat-btn" data-cat="conservation">🌱 Conservation</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="facts-section">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 reveal">
+          <div>
+            <h2 style="font-family:'Roboto Slab',serif;font-weight:700;font-size:1.4rem;margin:0;">Amazing Facts</h2>
+            <small style="color:var(--muted);" id="fact-count">Showing all 20 facts</small>
+          </div>
+          <button id="shuffle-btn" style="background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber);padding:8px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;">
+            <i class="bi bi-shuffle me-1"></i> Shuffle
+          </button>
+        </div>
+        <div class="facts-grid reveal" id="facts-grid">
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-7">
+            <div class="text-center mb-4 reveal">
+              <div style="font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Test Yourself</div>
+              <h2>Penguin Quiz</h2>
+              <p>Think you know penguins? Test your knowledge with these trivia questions.</p>
+              <div class="quiz-score" id="score-display">Score: 0 / 0</div>
+            </div>
+            <div class="quiz-card reveal">
+              <div class="quiz-question" id="q-text"></div>
+              <div id="q-options"></div>
+              <div class="quiz-feedback" id="q-feedback"></div>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small style="color:var(--muted);" id="q-counter"></small>
+                <button class="btn-quiz-next" id="next-btn" disabled>Next Question</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="timeline-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 reveal">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Penguin History</div>
+            <h2 class="mb-4">60 Million Years in the Making</h2>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:rgba(245,166,35,0.15);border-color:var(--amber);color:var(--amber);">🦕</div>
+              <div class="tl-content">
+                <div class="tl-year" style="color:var(--amber);">~66 Million Years Ago</div>
+                <div class="tl-text">The non-avian dinosaurs go extinct. The common ancestor of penguins and other modern birds begins to diversify rapidly.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:rgba(0,201,167,0.15);border-color:var(--teal);color:var(--teal);">🦅</div>
+              <div class="tl-content">
+                <div class="tl-year" style="color:var(--teal);">~60 Million Years Ago</div>
+                <div class="tl-text">The earliest known penguin ancestor, Waimanu manneringi, appears in what is now New Zealand. It was already flightless and aquatic.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:rgba(79,195,247,0.15);border-color:var(--sky);color:var(--sky);">🦴</div>
+              <div class="tl-content">
+                <div class="tl-year" style="color:var(--sky);">~37 Million Years Ago</div>
+                <div class="tl-text">Fossil evidence shows giant penguins over 6 feet tall roaming ancient seas — twice the size of Emperor penguins today.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:rgba(181,232,83,0.15);border-color:var(--lime);color:var(--lime);">🗺️</div>
+              <div class="tl-content">
+                <div class="tl-year" style="color:var(--lime);">1520 CE</div>
+                <div class="tl-text">Explorer Ferdinand Magellan becomes the first European to document penguins, encountering Magellanic penguins during his circumnavigation of the globe.</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot" style="background:rgba(255,107,107,0.15);border-color:var(--coral);color:var(--coral);">📅</div>
+              <div class="tl-content">
+                <div class="tl-year" style="color:var(--coral);">Today</div>
+                <div class="tl-text">18 recognized species remain, with 10 classified as Vulnerable, Endangered, or Near Threatened due to climate change, overfishing, and pollution.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:var(--surface);padding:4rem 0;border-top:1px solid var(--border);">
+      <div class="container text-center reveal">
+        <h2 style="font-family:'Roboto Slab',serif;font-weight:700;margin-bottom:0.5rem;">Explore the Species</h2>
+        <p style="color:var(--muted);max-width:480px;margin:0 auto 1.5rem;">Now that you know the facts, meet all 18 penguin species in detail.</p>
+        <a href="species.html" style="background:var(--amber);color:#111;padding:12px 28px;border-radius:10px;font-weight:700;text-decoration:none;display:inline-block;transition:opacity 0.2s;">View All Species <i class="bi bi-arrow-right ms-1"></i></a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p class="mb-1">🐧 <strong>PenguinWorld</strong> — Celebrating penguins everywhere</p>
+        <p class="mb-0"><a href="index.html">Home</a> &nbsp;|&nbsp; <a href="species.html">Species</a> &nbsp;|&nbsp; <a href="facts.html">Fun Facts</a></p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const allFacts = [
+        { num: '25', unit: 'mph', title: 'Fastest Swimmers', body: 'Gentoo penguins are the fastest swimming birds on Earth, capable of reaching 25 mph underwater. By comparison, the fastest human swimmer tops out around 5.3 mph.', cat: 'records', tag: 'tag-records' },
+        { num: '60M', unit: 'yrs', title: 'Ancient Lineage', body: 'Penguins have existed for over 60 million years. Their earliest ancestor, Waimanu, appeared in New Zealand shortly after the dinosaurs went extinct.', cat: 'biology', tag: 'tag-biology' },
+        { num: '1,850', unit: 'm', title: 'Deep Divers', body: 'Emperor penguins can dive to depths of 1,850 meters (over a mile!) and hold their breath for up to 22 minutes — the deepest dive recorded for any bird.', cat: 'records', tag: 'tag-records' },
+        { num: '65', unit: 'days', title: 'Fasting Fathers', body: 'Male Emperor penguins fast for 65 days straight while incubating their eggs through Antarctic winter, losing nearly half their body weight in the process.', cat: 'survival', tag: 'tag-survival' },
+        { num: '6', unit: 'ft', title: 'Giant Ancestors', body: 'Fossil records show that ancient penguins could grow over 6 feet tall and weigh up to 250 lbs — nearly double the size of today\'s Emperor penguins.', cat: 'biology', tag: 'tag-biology' },
+        { num: '11', unit: 'hrs', title: 'Microsleep Champions', body: 'Chinstrap penguins take over 10,000 microsleeps per day, each lasting just 4 seconds, totaling 11 cumulative hours of sleep without ever fully losing awareness.', cat: 'behavior', tag: 'tag-behavior' },
+        { num: '97%', unit: 'drop', title: 'African Penguin Decline', body: 'The African penguin population has collapsed from an estimated 1.5 million in 1910 to fewer than 50,000 today — a decline of over 97% in just over a century.', cat: 'conservation', tag: 'tag-conservation' },
+        { num: '-76', unit: '°F', title: 'Extreme Cold Survival', body: 'Emperor penguins survive Antarctic winters where temperatures drop to -76°F (-60°C). Their layered feathers trap warm air so effectively they can overheat in mild weather.', cat: 'survival', tag: 'tag-survival' },
+        { num: '100%', unit: 'mono', title: 'Lifelong Bonds', body: 'Most penguin species are monogamous within a breeding season and many return to the same partner year after year. They recognize each other by their unique vocal calls.', cat: 'behavior', tag: 'tag-behavior' },
+        { num: '18', unit: 'spp', title: 'Species Diversity', body: 'There are 18 recognized penguin species, ranging in habitat from icy Antarctica to the tropical Galápagos Islands. No penguins naturally live at the North Pole.', cat: 'biology', tag: 'tag-biology' },
+        { num: '22', unit: 'min', title: 'Breath Holding', body: 'Emperor penguins can hold their breath underwater for up to 22 minutes. Their bodies redirect oxygen to the heart and brain during long dives.', cat: 'survival', tag: 'tag-survival' },
+        { num: '3,000', unit: 'km', title: 'Migration Distance', body: 'Magellanic penguins migrate up to 3,000 km (1,860 miles) from their breeding colonies in Patagonia to wintering grounds off the coast of Brazil.', cat: 'behavior', tag: 'tag-behavior' },
+        { num: '10', unit: 'threatened', title: 'Endangered Species', body: '10 of the 18 penguin species are currently classified as Vulnerable, Endangered, or Near Threatened by the IUCN Red List due to human-related pressures.', cat: 'conservation', tag: 'tag-conservation' },
+        { num: '100', unit: 'mph', title: 'Wind Resistance', body: 'Emperor penguins huddle in groups of thousands to withstand 100 mph blizzard winds. They rotate positions so each bird takes turns facing the coldest outer edge.', cat: 'survival', tag: 'tag-survival' },
+        { num: '#1', unit: 'fish', title: 'Underwater Hunters', body: 'Penguins are apex ocean hunters. A single penguin can catch hundreds of fish in a single foraging trip using their sharp beaks and streamlined bodies.', cat: 'biology', tag: 'tag-biology' },
+        { num: '70', unit: 'yrs', title: 'Long Lifespan', body: 'Emperor penguins have been known to live up to 70 years in captivity, though most wild penguins live 15–25 years depending on the species.', cat: 'biology', tag: 'tag-biology' },
+        { num: '500K', unit: 'pairs', title: 'Largest Colony', body: 'The world\'s largest penguin colony is on South Georgia Island, home to hundreds of thousands of King penguin breeding pairs — a breathtaking natural spectacle.', cat: 'records', tag: 'tag-records' },
+        { num: '1520', unit: 'CE', title: 'First Documented', body: 'Explorer Ferdinand Magellan became the first European to document penguins in 1520 during his circumnavigation of the globe, encountering Magellanic penguins in Patagonia.', cat: 'behavior', tag: 'tag-behavior' },
+        { num: '33', unit: 'cm', title: 'Smallest Penguin', body: 'The Little Blue Penguin (also called the Fairy Penguin) of Australia and New Zealand stands just 33 cm (13 inches) tall and weighs only 1–1.5 kg.', cat: 'records', tag: 'tag-records' },
+        { num: '9M', unit: 'feathers', title: 'Insulating Feathers', body: 'Penguins have the densest feathering of any bird, with up to 9 million individual feathers per square meter. Their feathers are waterproof, windproof, and provide exceptional insulation.', cat: 'biology', tag: 'tag-biology' },
+      ];
+
+      const quizData = [
+        { q: 'Which penguin is the tallest?', opts: ['King Penguin', 'Emperor Penguin', 'Gentoo Penguin', 'Macaroni Penguin'], ans: 1 },
+        { q: 'What is the maximum swim speed of a Gentoo penguin?', opts: ['10 mph', '15 mph', '25 mph', '35 mph'], ans: 2 },
+        { q: 'How long can an Emperor penguin hold its breath?', opts: ['5 minutes', '10 minutes', '22 minutes', '45 minutes'], ans: 2 },
+        { q: 'Which penguin is the SMALLEST species?', opts: ['Rockhopper', 'Fairy / Little Blue', 'Chinstrap', 'African'], ans: 1 },
+        { q: 'Where does the African Penguin live?', opts: ['Antarctica', 'Australia', 'South Africa and Namibia', 'Galápagos Islands'], ans: 2 },
+        { q: 'How long have penguins existed on Earth?', opts: ['5 million years', '20 million years', '40 million years', '60 million years'], ans: 3 },
+        { q: 'What do male Emperor penguins do while incubating eggs?', opts: ['Hunt for food', 'Fast for 65 days', 'Swim to warmer water', 'Take turns with the female'], ans: 1 },
+        { q: 'How many penguin species are currently recognized?', opts: ['12', '15', '18', '24'], ans: 2 },
+      ];
+
+      let score = 0, qIdx = 0, answered = false;
+
+      function renderFacts(cat) {
+        const grid = document.getElementById('facts-grid');
+        const filtered = cat === 'all' ? allFacts : allFacts.filter(f => f.cat === cat);
+        document.getElementById('fact-count').textContent = `Showing ${filtered.length} facts${cat !== 'all' ? ' in this category' : ''}`;
+        grid.innerHTML = filtered.map(f => `
+          <div class="fact-card cat-${f.cat}">
+            <div class="fact-cat-tag ${f.tag}">${f.cat.charAt(0).toUpperCase() + f.cat.slice(1)}</div>
+            <div class="fact-num">${f.num}<span class="fact-unit">${f.unit}</span></div>
+            <div class="fact-title">${f.title}</div>
+            <div class="fact-body">${f.body}</div>
+          </div>
+        `).join('');
+      }
+
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          renderFacts(this.dataset.cat);
+        });
+      });
+
+      document.getElementById('shuffle-btn').addEventListener('click', () => {
+        const activeCat = document.querySelector('.cat-btn.active').dataset.cat;
+        const filtered = activeCat === 'all' ? [...allFacts] : allFacts.filter(f => f.cat === activeCat);
+        filtered.sort(() => Math.random() - 0.5);
+        const grid = document.getElementById('facts-grid');
+        grid.innerHTML = filtered.map(f => `
+          <div class="fact-card cat-${f.cat}">
+            <div class="fact-cat-tag ${f.tag}">${f.cat.charAt(0).toUpperCase() + f.cat.slice(1)}</div>
+            <div class="fact-num">${f.num}<span class="fact-unit">${f.unit}</span></div>
+            <div class="fact-title">${f.title}</div>
+            <div class="fact-body">${f.body}</div>
+          </div>
+        `).join('');
+      });
+
+      function loadQuestion() {
+        if (qIdx >= quizData.length) {
+          document.querySelector('.quiz-card').innerHTML = `
+            <div class="text-center py-3">
+              <div style="font-size:3rem;margin-bottom:1rem;">🎉</div>
+              <div style="font-family:'Roboto Slab',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.5rem;">Quiz Complete!</div>
+              <div style="color:var(--muted);margin-bottom:1rem;">You scored <strong style="color:var(--amber);">${score} out of ${quizData.length}</strong></div>
+              <div style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;">${score === quizData.length ? 'Perfect score! You\'re a penguin expert!' : score >= quizData.length / 2 ? 'Great job! Keep exploring to learn more.' : 'Keep reading our facts to improve your score!'}</div>
+              <button class="btn-quiz-next" onclick="location.reload()">Try Again</button>
+            </div>`;
+          return;
+        }
+        const q = quizData[qIdx];
+        answered = false;
+        document.getElementById('q-text').textContent = q.q;
+        document.getElementById('q-feedback').textContent = '';
+        document.getElementById('next-btn').disabled = true;
+        document.getElementById('q-counter').textContent = `Question ${qIdx + 1} of ${quizData.length}`;
+        document.getElementById('q-options').innerHTML = q.opts.map((opt, i) =>
+          `<button class="quiz-option" onclick="checkAnswer(${i})">${opt}</button>`
+        ).join('');
+        document.getElementById('score-display').textContent = `Score: ${score} / ${qIdx}`;
+      }
+
+      function checkAnswer(idx) {
+        if (answered) return;
+        answered = true;
+        const q = quizData[qIdx];
+        const btns = document.querySelectorAll('.quiz-option');
+        btns.forEach(b => b.disabled = true);
+        if (idx === q.ans) {
+          btns[idx].classList.add('correct');
+          document.getElementById('q-feedback').innerHTML = `<span style="color:var(--teal);">✓ Correct! Well done.</span>`;
+          score++;
+        } else {
+          btns[idx].classList.add('wrong');
+          btns[q.ans].classList.add('correct');
+          document.getElementById('q-feedback').innerHTML = `<span style="color:var(--coral);">✗ Not quite. The answer is "${q.opts[q.ans]}".</span>`;
+        }
+        document.getElementById('score-display').textContent = `Score: ${score} / ${qIdx + 1}`;
+        document.getElementById('next-btn').disabled = false;
+      }
+
+      document.getElementById('next-btn').addEventListener('click', () => {
+        qIdx++;
+        loadQuestion();
+      });
+
+      const revEls = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e, i) => {
+          if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 70); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.08 });
+      revEls.forEach(el => obs.observe(el));
+
+      renderFacts('all');
+      loadQuestion();
+    </script>
+  </body>
+</html>
